@@ -3,7 +3,10 @@ import { success } from "../../utils/response.js";
 
 export const register = async (req, res, next) => {
   try {
-    const user = await authService.registerUser(req.body);
+    const user = await authService.registerUser({
+      ...req.body,
+      tenantId: req.tenantId,
+    });
     success(res, user, "User registered");
   } catch (err) {
     next(err);
@@ -13,7 +16,10 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { user, accessToken, refreshToken } = await authService.loginUser(
-      req.body,
+      {
+        ...req.body,
+        tenantId: req.tenantId,
+      },
     );
 
     res.cookie("refreshToken", refreshToken, {
